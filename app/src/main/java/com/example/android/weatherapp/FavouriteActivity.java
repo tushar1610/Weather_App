@@ -7,32 +7,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import com.example.android.weatherapp.data.MyDbHelper;
+import com.example.android.weatherapp.model.Weather;
+
 import java.util.ArrayList;
 
 public class FavouriteActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ArrayList<model> dataholder;
+    MyFavouriteAdapter myFavouriteAdapter;
+    MyDbHelper myDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
 
-            recyclerView=(RecyclerView)findViewById(R.id.recview);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            Cursor cursor=new dbmanager(this).readalldata();
-            dataholder=new ArrayList<>();
-
-            while(cursor.moveToNext())
-            {
-                model obj=new model(cursor.getString(1));
-                dataholder.add(obj);
-            }
-
-            myadapter adapter=new myadapter(dataholder, getApplicationContext());
-            recyclerView.setAdapter(adapter);
+        myDbHelper = new MyDbHelper(this);
+        recyclerView=(RecyclerView)findViewById(R.id.recview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        myFavouriteAdapter = new MyFavouriteAdapter(FavouriteActivity.this, myDbHelper);
+        recyclerView.setAdapter(myFavouriteAdapter);
 
         }
 }
