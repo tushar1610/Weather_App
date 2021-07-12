@@ -12,6 +12,7 @@ import com.example.android.weatherapp.model.Weather;
 import com.example.android.weatherapp.params.Params;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyDbHelper extends SQLiteOpenHelper {
     public MyDbHelper(@Nullable Context context) {
@@ -39,9 +40,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    public int deleteCity(int position){
-        SQLiteDatabase database = this.getReadableDatabase();
-        return database.delete(Params.TABLE_NAME, String.valueOf(Params.KEY_ID) + "=?", new String[]{String.valueOf(position)});
+    public boolean deleteCity(Weather cityData){
+        SQLiteDatabase database = this.getWritableDatabase();
+        //return database.delete(Params.TABLE_NAME, String.valueOf(Params.KEY_ID) + "=?", new String[]{String.valueOf(position)});
+        String queryString = "DELETE FROM " + Params.TABLE_NAME + " WHERE " + Params.KEY_ID + "=" + cityData.getId();
+        Cursor cursor = database.rawQuery(queryString, null);
+        if(cursor.moveToFirst()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int getCount(){
@@ -51,8 +59,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public ArrayList<Weather> getAllCity(){
-        ArrayList<Weather> favouriteLsit = new ArrayList<>();
+    public List<Weather> getAllCity(){
+        List<Weather> favouriteList = new ArrayList<Weather>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         String select = "SELECT * FROM " + Params.TABLE_NAME;
@@ -64,10 +72,10 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 Weather favourite = new Weather();
                 favourite.setId(Integer.parseInt(cursor.getString(0)));
                 favourite.setCity_name(cursor.getString(1));
-                favouriteLsit.add(favourite);
+                favouriteList.add(favourite);
             }while (cursor.moveToNext());
         }
 
-        return favouriteLsit;
+        return favouriteList;
     }
 }

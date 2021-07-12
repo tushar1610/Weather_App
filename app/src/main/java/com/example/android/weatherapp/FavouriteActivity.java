@@ -23,10 +23,10 @@ public class FavouriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
 
-        myDbHelper = new MyDbHelper(this);
+        myDbHelper = new MyDbHelper(FavouriteActivity.this);
         recyclerView=(RecyclerView)findViewById(R.id.recview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        myFavouriteAdapter = new MyFavouriteAdapter(FavouriteActivity.this, myDbHelper);
+        myFavouriteAdapter = new MyFavouriteAdapter(FavouriteActivity.this, myDbHelper, myDbHelper.getAllCity());
         recyclerView.setAdapter(myFavouriteAdapter);
 
         }

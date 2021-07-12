@@ -15,16 +15,18 @@ import com.example.android.weatherapp.data.MyDbHelper;
 import com.example.android.weatherapp.model.Weather;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyFavouriteAdapter extends RecyclerView.Adapter<MyFavouriteAdapter.MyFavouriteViewholder> {
 
     Context context;
     MyDbHelper myDbHelper;
-    ArrayList<Weather> weathers;
+    List<Weather> weathers;
 
-    public MyFavouriteAdapter(Context context, MyDbHelper myDbHelper) {
+    public MyFavouriteAdapter(Context context, MyDbHelper myDbHelper, List<Weather> list) {
         this.context = context;
         this.myDbHelper = myDbHelper;
+        this.weathers = list;
     }
 
     @NonNull
@@ -36,14 +38,18 @@ public class MyFavouriteAdapter extends RecyclerView.Adapter<MyFavouriteAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyFavouriteAdapter.MyFavouriteViewholder holder, int position) {
-        weathers = myDbHelper.getAllCity();
+//        Weather weatherPosition = weathers.get(position);
         holder.cityName.setText(weathers.get(position).getCity_name());
         holder.deleteCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int deleteConst = myDbHelper.deleteCity(position);
-                weathers.remove(position);
-                notifyDataSetChanged();
+                boolean deleteConst = myDbHelper.deleteCity(weathers.get(position));
+                if (!deleteConst){
+                    notifyItemRemoved(position);
+                    Toast.makeText(context, "Deletion successfull", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Error in deletion", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
